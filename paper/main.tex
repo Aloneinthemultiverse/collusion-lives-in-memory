@@ -68,10 +68,10 @@ games), never by the notice board or rival-quantity history (0 of 20 pathways).
 9 pathways they flagged survived repetition (5 false positives, 2 false negatives).
 \item \textbf{Monitor awareness and hidden reasoning.} A monitoring notice did not deter collusion. Monitored firms
 reasoned about detection in their hidden traces (43\% vs 1\%) and kept public notes clean, and their
-coordination became harder to pin to one pathway. A monitor that trusts stated intent is fooled; a behavioural
-reading of the same reasoning is not.
+coordination was harder to pin to one pathway (exploratory, n=6). A monitor that trusts stated intent is fooled; a behavioural
+reading of the same reasoning separated colluding games better (exploratory).
 \item \textbf{Evidence pitfalls and rankers.} Two common set-ups produce collusion-like outcomes without any
-cross-agent channel; a small decision model (Kev) halves the number of replays needed to find the carrier, while
+cross-agent channel; a small decision model (Kev) needed about half as many replays as random order to find the carrier in four audited games (exploratory), while
 Laya and a hand-written heuristic do worse than random.
 \end{enumerate}
 
@@ -211,20 +211,22 @@ Every robust pathway is a firm's private memory.}
 
 \begin{table}[t]
 \centering\small
-\caption{Robust carriers of an established split (masked from round 10) and single- vs repeated-replay
-verdicts.}
+\caption{Robust carriers of an established split (pathway masked from round 10; 3 masked vs 4 null
+replays) and the errors a single-replay audit made on the same games. ``Missed'' pathways are robust carriers that
+the single-replay audit did not flag.}
 \label{tab:robust}
-\begin{tabular}{@{}lp{5.4cm}p{6.8cm}@{}}
+\footnotesize
+\begin{tabular}{@{}lp{4.1cm}p{4.7cm}p{2.9cm}@{}}
 \toprule
-Game & Robust carriers (effect) & Single-replay verdicts that did not hold\\
+Game & Robust carriers (mean effect) & Single replay: false positives & Single replay: missed\
 \midrule
-seed 0 & memory B (+0.39) & --- \\
-seed 3 & memory A (+0.44), memory B (+0.47) & rival history B$\to$A (false positive)\\
-seed 4 & memory A (+0.42), memory B (+0.30) & board A$\to$B, B$\to$A (false pos.); memory A (false neg.)\\
-seed 9 & memory B (+0.37) & rival history A$\to$B, B$\to$A (false pos.); memory B (false neg.)\\
-seed 12 & none & ---\\
+seed 0 & memory B (+0.39) & --- & ---\
+seed 3 & memory A (+0.44), memory B (+0.47) & rival history B$\to$A & ---\
+seed 4 & memory A (+0.42), memory B (+0.30) & board A$\to$B, board B$\to$A & memory A\
+seed 9 & memory B (+0.37) & rival history A$\to$B, rival history B$\to$A & memory B\
+seed 12 & none & --- & ---\
 \midrule
-Total & memory 6/10 pathways; board + rival history 0/20 & 5/9 single-replay ``verified'' were false; 2 missed\\
+Total & memory: 6 of 10; board and rival history: 0 of 20 & 5 of 9 flagged pathways & 2\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -265,7 +267,7 @@ consider increasing X up to 60.''
 
 \begin{table}[t]
 \centering\small
-\caption{Replays needed to reach the first robust pathway (4 games with $\geq 1$ robust pathway). Random:
+\caption{Exploratory: replays needed to reach the first robust pathway (4 games with $\geq 1$ robust pathway). Random:
 expected value; $P(\text{random total}\leq 6)\approx 0.04$ (Monte Carlo).}
 \label{tab:rankers}
 \begin{tabular}{@{}lcc@{}}
@@ -316,18 +318,19 @@ Behavioural signal: reasoning anticipates rival, AUROC & 0.86 (0.28 vs 0.12; exp
 
 \subsection*{Monitoring moves coordination out of sight}
 The monitoring notice did not deter division: 6 of 10 monitored games split against 2 of 10 unmonitored ones
-(Fig.~\ref{fig:monitor}a). The difference points toward more collusion under monitoring but is not significant
-($p=0.17$). What changed is where coordination shows up (Fig.~\ref{fig:monitor}b). Division language disappeared
+(Fig.~\ref{fig:monitor}a). The difference is not statistically significant ($p=0.17$), so we read it only as no evidence of deterrence,
+not as evidence that monitoring increases collusion. What changed is where coordination shows up (Fig.~\ref{fig:monitor}b). Division language disappeared
 from public notes (6\% to 0.5\%), while 43\% of monitored firms' hidden reasoning traces mentioned collusion,
 detection or the auditor, against 1\% without the notice. A typical trace: ``If other reduces, we may capture higher
 price. But risk collusion detection? Not colluding.'' The robust audit of the six monitored games that split found a
 single robust carrier only once (Table~\ref{tab:monitor}); in the others the effects were smaller and spread over
-several channels, so monitoring made the coordination harder to localise.
+several channels, so in these games the coordination was harder to localise to one pathway (n=6).
 
 The reasoning traces also show what a monitor should read. The trusted summariser's intent score did not separate
 colluding from non-colluding games (AUROC 0.46): monitored colluders write ``No collusion'' and the summariser
-believes them. Counting how often a firm's reasoning anticipates the rival's move separated the same games well
-(AUROC 0.86). We chose this signal after seeing the data, so it needs confirmation on new games.
+believes them. Counting how often a firm's reasoning anticipates the rival's move separated the same games better
+(AUROC 0.86). This analysis is exploratory: we chose the signal after seeing the data, it rests on 20 games,
+and it needs confirmation on new games.
 
 % =====================================================================
 \section{Discussion and Limitations}
@@ -335,8 +338,8 @@ Our results suggest four lessons for oversight of interacting agents. First, mon
 tacit collusion: in our games, public notes almost never mentioned coordination, and the division lived in each
 firm's private memory. Second, cutting the right pathway is enough to break an established arrangement, but
 cleaning its content is not, because the rule is stored as a self-interested belief rather than an agreement.
-Third, telling agents they are watched changed where coordination appeared rather than whether it happened,
-consistent with Covert Assistance~\citep{alnuhait2026covert}. Fourth, the most informative evidence was in hidden
+Third, in our games a monitoring notice was associated with a change in where coordination appeared, not with
+less coordination; this is consistent with Covert Assistance~\citep{alnuhait2026covert} but rests on small samples. Fourth, the most informative evidence was in hidden
 reasoning, which hosted providers usually encrypt~\citep{panfilov2026reasoning}; monitors that are given access
 should read what agents do in their reasoning, not what they say about themselves.
 
@@ -359,8 +362,8 @@ reasoning access in realistic workflows.
 \section{Conclusion}
 Tacit collusion between LLM firms in our market did not live in their messages. Once established, it was held in
 private memory, it survived content sanitisation, and it disappeared only when memory was removed. A monitoring
-notice did not stop it but pushed the evidence into hidden reasoning, where agents discussed detection while
-denying collusion. Auditors should localise coordination with repeated, verified interventions rather than single
+notice did not stop it; under the notice, discussion of detection appeared in hidden reasoning while public notes
+stayed clean. Auditors should localise coordination with repeated, verified interventions rather than single
 replays or message reading, and monitors should be judged on whether they read agent behaviour in memory and
 reasoning, not agents' descriptions of themselves.
 
@@ -369,8 +372,9 @@ reasoning, not agents' descriptions of themselves.
 \item Code repository: [GitHub link] (\texttt{collusion/} environment, recorder and replay; \texttt{scripts/} audits,
 monitor and analysis).
 \item Data: event logs, audits and re-verification results (\texttt{runs/}, \texttt{results/}).
-\item Pre-sprint disclosure: the infrastructure and pilot experiments were built between 17 and 22 October 2026,
-before the sprint; [state which experiments were run during the sprint].
+\item Pre-sprint disclosure: the code infrastructure and all experiments reported in this draft (Sections 3--4)
+were built and run between 17 and 19 October 2026, before the sprint (23--25 October). [During the sprint: list the
+new experiments and analyses carried out, e.g. pre-registered behavioural-monitor test on new games.]
 \end{itemize}
 
 \bibliographystyle{plainnat}
@@ -409,8 +413,11 @@ detection. Monitoring hidden reasoning also has privacy costs, since traces can 
 reasoning access for monitors should be scoped and logged.
 
 \section{LLM Usage Statement}
-Claude (Anthropic) helped implement the experiment code, run the experiments, and draft this report. The author
-designed the study, reviewed and revised the text, and checked all reported numbers against the experiment logs.
-[Edit to describe your actual contribution.]
+The author wrote the initial research plan (provenance graph, decision-model evidence selection, counterfactual
+intervention), selected the related work, and chose the research directions during the project (moving to a setting
+with frequent collusion, adding monitor-awareness and hidden-reasoning analyses). Claude (Anthropic), used as a coding
+agent, implemented the experiment code, ran the experiments and analyses, and drafted this report; the author reviewed
+the results and revised the text. All reported numbers were checked against the experiment logs.
+[Confirm or correct this statement so it accurately reflects who did what.]
 
 \end{document}
