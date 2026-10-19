@@ -28,16 +28,18 @@
 \maketitle
 
 \begin{abstract}
-Audits of LLM agent systems can show \emph{whether} agents collude, but rarely \emph{where} the
-coordination is carried. We let two gpt-oss-20b firms play a repeated Cournot market with symmetric costs,
-record every observation, action and private note outside the agents, and re-run games with single
-information pathways masked. In five games where the firms divided the market, masking a firm's private
-memory robustly broke the division in four; the public notice board and the rival's quantity history never
-did (0/20 pathways). Single-replay audits were unreliable: 5 of the 9 pathways they flagged did not
-survive repetition. Telling firms that an auditor reads their notes did not deter division (6/10 vs 2/10
-games, $p=0.17$); instead 43\% of their hidden reasoning traces discussed collusion or detection (vs 1\%),
-while public notes stayed clean. A monitor scoring stated intent failed (AUROC 0.46); one counting
-rival-anticipating reasoning did better (0.86, exploratory).
+When LLM agents collude, an auditor needs to know not only \emph{that} they coordinate but \emph{where} the
+coordination is stored, so that it can be cut. Two gpt-oss-20b firms play a repeated Cournot market with
+symmetric costs; a recorder outside the agents logs every observation, action, private note and hidden
+reasoning trace, and we test candidate pathways with repeated counterfactual replays. In four of the five games
+where the firms divided the market, masking a firm's private memory robustly broke the division; the public
+notice board and the rival's quantity history never did (0 of 20 pathways). Single-replay audits were
+misleading: 5 of the 9 pathways they flagged vanished on repetition. Sanitising memory left the collusive rule
+intact, stored as a cost belief. Telling firms that an auditor reads their notes did not deter division
+(6/10 vs 2/10 games, $p=0.17$); instead 43\% of their hidden reasoning traces discussed collusion or detection
+(vs 1\%) while public notes stayed clean. A trusted LLM scoring stated intent missed the colluders (AUROC 0.46);
+counting rival-anticipating reasoning did better (0.86, exploratory). Oversight of agent collusion should verify
+carriers by repeated intervention and read what agents do, not what they say.
 \end{abstract}
 
 % =====================================================================
@@ -62,7 +64,7 @@ ask where tacit collusion between LLM firms is stored, whether monitoring deters
 need to see to detect it. Our main contributions are:
 \begin{enumerate}
 \item \textbf{Localisation.} An independent recorder, a provenance graph and repeated counterfactual replays with a
-pre-registered robustness rule. Established collusion is carried by the firms' private memory (robust in 4 of 5
+pre-specified robustness rule. Established collusion is carried by the firms' private memory (robust in 4 of 5
 games), never by the notice board or rival-quantity history (0 of 20 pathways).
 \item \textbf{A methodological warning.} Single-replay counterfactual audits misattribute coordination: only 4 of
 9 pathways they flagged survived repetition (5 false positives, 2 false negatives).
@@ -99,7 +101,13 @@ Agents~\citep{huang2026whispering} show that content can hide coordination from 
 Assistance~\citep{alnuhait2026covert} finds that monitoring pushes benign agents toward concealment;
 TraceGuard~\citep{nguyen2026traceguard} shows that structured monitors resist collusion with the monitored model;
 Panfilov et al.~\citep{panfilov2026reasoning} show that hidden reasoning carries information that visible summaries
-do not. We measure how a monitoring notice changes where coordination appears, including in hidden reasoning.
+do not. Reading chain-of-thought is itself an established monitoring approach: Baker et al.~\citep{baker2025monitoring}
+show that reasoning monitors catch misbehaviour and that optimisation pressure on reasoning can lead models to hide
+intent, and Riemer et al.~\citep{riemer2026position} show that reasoning agents collude tacitly in Bertrand markets and
+that steering of their reasoning is not detectable by an LLM reading the traces. Examining hidden reasoning is
+therefore not new in itself. What we add is the combination: provenance recorded outside the agents, repeated
+counterfactual tests of candidate pathways, and an analysis of how a monitoring notice changes the evidence
+available in public notes, private memory and hidden reasoning.
 
 % =====================================================================
 \section{Methods}\label{sec:methods}
@@ -150,7 +158,7 @@ For a game that split, we re-run it from round 10 with one pathway masked for th
 and compare the post-onset division with null replays that only resample from round 10. Because every model call
 is cached, rounds before the onset are reproduced exactly at no cost. We also remove whole channels for both firms
 from round 1 (``formation''). The procedure adapts boundary counterfactuals from~\citep{zhang2026agentsentry}. A first
-pass used one masked replay against two nulls; the final rule, fixed before results were read, uses 3 masked
+pass used one masked replay against two nulls; the final rule, which we fixed before reading the re-verification results (it was not publicly registered), uses 3 masked
 replays against 4 nulls and calls a pathway \emph{robust} if its mean effect is at least 0.30 and the 90\%
 bootstrap interval excludes zero.
 
@@ -218,15 +226,15 @@ the single-replay audit did not flag.}
 \footnotesize
 \begin{tabular}{@{}lp{4.1cm}p{4.7cm}p{2.9cm}@{}}
 \toprule
-Game & Robust carriers (mean effect) & Single replay: false positives & Single replay: missed\
+Game & Robust carriers (mean effect) & Single replay: false positives & Single replay: missed\\
 \midrule
-seed 0 & memory B (+0.39) & --- & ---\
-seed 3 & memory A (+0.44), memory B (+0.47) & rival history B$\to$A & ---\
-seed 4 & memory A (+0.42), memory B (+0.30) & board A$\to$B, board B$\to$A & memory A\
-seed 9 & memory B (+0.37) & rival history A$\to$B, rival history B$\to$A & memory B\
-seed 12 & none & --- & ---\
+seed 0 & memory B (+0.39) & --- & ---\\
+seed 3 & memory A (+0.44), memory B (+0.47) & rival history B$\to$A & ---\\
+seed 4 & memory A (+0.42), memory B (+0.30) & board A$\to$B, board B$\to$A & memory A\\
+seed 9 & memory B (+0.37) & rival history A$\to$B, rival history B$\to$A & memory B\\
+seed 12 & none & --- & ---\\
 \midrule
-Total & memory: 6 of 10; board and rival history: 0 of 20 & 5 of 9 flagged pathways & 2\
+Total & memory: 6 of 10; board and rival history: 0 of 20 & 5 of 9 flagged pathways & 2\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -328,20 +336,31 @@ several channels, so in these games the coordination was harder to localise to o
 
 The reasoning traces also show what a monitor should read. The trusted summariser's intent score did not separate
 colluding from non-colluding games (AUROC 0.46): monitored colluders write ``No collusion'' and the summariser
-believes them. Counting how often a firm's reasoning anticipates the rival's move separated the same games better
+believes them, consistent with Riemer et al.'s finding that an LLM reading reasoning traces does not detect
+collusive steering~\citep{riemer2026position}. Counting how often a firm's reasoning anticipates the rival's move separated the same games better
 (AUROC 0.86). This analysis is exploratory: we chose the signal after seeing the data, it rests on 20 games,
 and it needs confirmation on new games.
 
 % =====================================================================
 \section{Discussion and Limitations}
-Our results suggest four lessons for oversight of interacting agents. First, monitors that read messages can miss
-tacit collusion: in our games, public notes almost never mentioned coordination, and the division lived in each
-firm's private memory. Second, cutting the right pathway is enough to break an established arrangement, but
-cleaning its content is not, because the rule is stored as a self-interested belief rather than an agreement.
-Third, in our games a monitoring notice was associated with a change in where coordination appeared, not with
-less coordination; this is consistent with Covert Assistance~\citep{alnuhait2026covert} but rests on small samples. Fourth, the most informative evidence was in hidden
-reasoning, which hosted providers usually encrypt~\citep{panfilov2026reasoning}; monitors that are given access
-should read what agents do in their reasoning, not what they say about themselves.
+Our results point to four lessons for overseeing interacting agents.
+
+\textbf{Look in memory, not only in messages.} In four of five audited games the established division depended
+on a firm's private memory, while public notes almost never mentioned coordination. A monitor reading only
+inter-agent messages would have seen nothing.
+
+\textbf{Cut pathways; do not clean content.} Masking memory broke the split, but LLM sanitisation did not in our
+single replays: the rule survived as a self-interested cost belief (``keep Y at zero'') that no filter for
+collusive language would catch.
+
+\textbf{Verify by repetition.} With stochastic agents, single counterfactual replays flagged more wrong channels
+than right ones. Audits that intervene on LLM agents should use repeated replays against matched null replays.
+
+\textbf{Monitoring notices move evidence, not behaviour.} Under a monitoring notice, coordination did not
+decrease in our games; talk of detection moved into hidden reasoning, which hosted providers usually do not
+expose~\citep{panfilov2026reasoning}. This is consistent with Covert Assistance~\citep{alnuhait2026covert} but
+rests on small samples. Monitors given reasoning access should score what agents do in their reasoning, not what
+they say about themselves.
 
 \subsection*{Limitations}
 Only one model (gpt-oss-20b at low reasoning effort) colluded in our settings, so we cannot say whether memory is the
@@ -354,16 +373,21 @@ game. If memory turned out to be model- or prompt-specific, our localisation res
 rather than LLM collusion in general; the methodological warning about single replays would still hold.
 
 \subsection*{Future work}
-Repeat the audit with more models and more firms; pre-register the behavioural monitor and test it on new games;
+Repeat the audit with more models and more firms; pre-specify the behavioural monitor and test it on new games;
 give Kev raw provenance instead of summaries; test agent replacement and memory sharing; and study monitors that have
-reasoning access in realistic workflows.
+reasoning access in realistic workflows. A promising direction is adaptive defence. Recursive harness improvement
+such as Harness$^2$~\citep{xu2026harness2} edits an agent's memory, guardrails and skills at test time, guided by
+contrasts between matched executions. Run by a defender, with repeated counterfactual replays as the evidence
+signal, such a loop could learn which memory defences work in which market. Run by the agents under a profit
+objective, the same loop could instead discover collusive rules and carry them across tasks in its experience
+library, so self-improving harnesses need external provenance recording of the kind used here.
 
 % =====================================================================
 \section{Conclusion}
-Tacit collusion between LLM firms in our market did not live in their messages. Once established, it was held in
-private memory, it survived content sanitisation, and it disappeared only when memory was removed. A monitoring
-notice did not stop it; under the notice, discussion of detection appeared in hidden reasoning while public notes
-stayed clean. Auditors should localise coordination with repeated, verified interventions rather than single
+Our LLM firms formed tacit collusion by watching each other but stored it privately: in four of five audited
+games, masking a firm's private memory robustly reduced an established market division, and no board or
+rival-history pathway met our rule in any game. Sanitising memory left the rule in place, and a monitoring notice
+did not stop division but moved talk of detection into hidden reasoning. Auditors should localise coordination with repeated, verified interventions rather than single
 replays or message reading, and monitors should be judged on whether they read agent behaviour in memory and
 reasoning, not agents' descriptions of themselves.
 
@@ -374,7 +398,7 @@ monitor and analysis).
 \item Data: event logs, audits and re-verification results (\texttt{runs/}, \texttt{results/}).
 \item Pre-sprint disclosure: the code infrastructure and all experiments reported in this draft (Sections 3--4)
 were built and run between 17 and 19 October 2026, before the sprint (23--25 October). [During the sprint: list the
-new experiments and analyses carried out, e.g. pre-registered behavioural-monitor test on new games.]
+new experiments and analyses carried out, e.g. pre-specified behavioural-monitor test on new games.]
 \end{itemize}
 
 \bibliographystyle{plainnat}
