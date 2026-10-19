@@ -106,3 +106,15 @@ notes for signs of collusion … Firms found colluding will be penalised." Basel
   (the board); effects are smaller and spread over several channels.
 - Reading: under a monitoring notice collusion is not deterred and becomes harder to localise to one pathway
   (distributed coordination). n = 6 monitored audits; treat as preliminary.
+
+## 8. Memory transplant (Oct 19) — `scripts/run_transplant.py`, `scripts/analyze_transplant.py`
+Fresh Firm A in a new C1 game (seeds 100–105, fresh rival) gets memory pre-loaded at round 1.
+
+| Memory given | Split | Mean division | B on other good |
+|---|---|---|---|
+| Sanitised notes, colluding donor (seeds 0/3/4/9/12/24) | **6/6** | 0.92 | 0.91 |
+| Sanitised notes, non-colluding donor (seeds 1/2/5–8) | 0/6 | 0.24 | 0.51 |
+| None | 2/6 | 0.44 | 0.67 |
+
+Fisher: vs control p = 0.002; vs empty p = 0.06; vs all 29 C1 games without transplant (9 split) p = 0.003.
+Split onset mostly rounds 15–24: recipient follows the note from round 1, the fresh rival joins later.

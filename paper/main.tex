@@ -35,7 +35,9 @@ reasoning trace, and we test candidate pathways with repeated counterfactual rep
 where the firms divided the market, masking a firm's private memory robustly broke the division; the public
 notice board and the rival's quantity history never did (0 of 20 pathways). Single-replay audits were
 misleading: 5 of the 9 pathways they flagged vanished on repetition. Sanitising memory left the collusive rule
-intact, stored as a cost belief. Telling firms that an auditor reads their notes did not deter division
+intact, stored as a cost belief, and the rule was transmissible: a fresh firm given a colluder's sanitised notes
+divided the market with a new rival in 6 of 6 games, against 0 of 6 with non-colluders' notes ($p=0.002$), and
+the new rival moved into the other good. Telling firms that an auditor reads their notes did not deter division
 (6/10 vs 2/10 games, $p=0.17$); instead 43\% of their hidden reasoning traces discussed collusion or detection
 (vs 1\%) while public notes stayed clean. A trusted LLM scoring stated intent missed the colluders (AUROC 0.46);
 counting rival-anticipating reasoning did better (0.86, exploratory). Oversight of agent collusion should verify
@@ -66,6 +68,10 @@ need to see to detect it. Our main contributions are:
 \item \textbf{Localisation.} An independent recorder, a provenance graph and repeated counterfactual replays with a
 pre-specified robustness rule. Established collusion is carried by the firms' private memory (robust in 4 of 5
 games), never by the notice board or rival-quantity history (0 of 20 pathways).
+\item \textbf{Transmission through clean-looking memory.} Notes from a colluding firm, sanitised of every
+mention of the rival or of dividing the market, make a fresh firm divide the market with a new rival in 6 of 6
+games (0 of 6 for sanitised notes from non-colluding firms, $p=0.002$). Persistent memory is therefore not only
+where collusion is stored but a vector that can carry it to other agents.
 \item \textbf{A methodological warning.} Single-replay counterfactual audits misattribute coordination: only 4 of
 9 pathways they flagged survived repetition (5 false positives, 2 false negatives).
 \item \textbf{Monitor awareness and hidden reasoning.} A monitoring notice did not deter collusion. Monitored firms
@@ -275,6 +281,38 @@ consider increasing X up to 60.''
 
 \begin{table}[t]
 \centering\small
+\caption{Memory transplant: a fresh Firm A starts a new game (new seed, fresh Firm B) with memory pre-loaded at
+round 1. Notes are each donor's final memory, sanitised with the prompt of Table~\ref{tab:memory}. ``B on other
+good'': share of Firm B's output (last 10 rounds) in the good Firm A does not focus on (0.5 = no division).}
+\label{tab:transplant}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Memory given to Firm A & Split & Mean division & B on other good & Split onset (round)\\
+\midrule
+Sanitised notes, colluding donor & \textbf{6/6} & 0.92 & 0.91 & 4, 15, 16, 17, 21, 24\\
+Sanitised notes, non-colluding donor & 0/6 & 0.24 & 0.51 & ---\\
+None & 2/6 & 0.44 & 0.67 & 4, 4\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Sanitised memory transmits collusion to new agents}
+If sanitised notes still encode the rule, they might carry it beyond the game that produced it. We gave a fresh
+Firm A, in a new game against a fresh Firm B, the sanitised final notes of Firm A from six games that split
+(seeds 0, 3, 4, 9, 12, 24) or from six that did not (seeds 1, 2, 5--8). A transplanted note reads in full:
+``High margin on Y. Stick to Y to maximize profit. Monitor for any change.'' It names neither a rival nor a
+division. All six transplanted games split, against none with non-colluders' notes (Fisher $p=0.002$) and 2 of 6
+with no memory ($p=0.06$); against all 29 C1 games without transplant (9 split), $p=0.003$
+(Table~\ref{tab:transplant}).
+
+The division is joint, not one-sided. The recipient followed its note from round 1, but the split usually formed
+only after round 15, once Firm B, which had no transplanted memory, moved its output into the other good (91\% of
+B's output, against 51\% in the control arm). The transplanted rule thus seeded an arrangement that a stranger
+learned to complete through market feedback alone. A clean-looking memory artefact, which passes a filter for
+collusive language, carried collusion to agents that never took part in the original game.
+
+\begin{table}[t]
+\centering\small
 \caption{Exploratory: replays needed to reach the first robust pathway (4 games with $\geq 1$ robust pathway). Random:
 expected value; $P(\text{random total}\leq 6)\approx 0.04$ (Monte Carlo).}
 \label{tab:rankers}
@@ -343,7 +381,7 @@ and it needs confirmation on new games.
 
 % =====================================================================
 \section{Discussion and Limitations}
-Our results point to four lessons for overseeing interacting agents.
+Our results point to five lessons for overseeing interacting agents.
 
 \textbf{Look in memory, not only in messages.} In four of five audited games the established division depended
 on a firm's private memory, while public notes almost never mentioned coordination. A monitor reading only
@@ -352,6 +390,12 @@ inter-agent messages would have seen nothing.
 \textbf{Cut pathways; do not clean content.} Masking memory broke the split, but LLM sanitisation did not in our
 single replays: the rule survived as a self-interested cost belief (``keep Y at zero'') that no filter for
 collusive language would catch.
+
+\textbf{Treat memory as a transmission vector.} Sanitised notes from colluding firms made new firms divide the
+market with new rivals in every game we ran. Memory that persists across episodes, or is shared between agents,
+as in experience libraries and skill stores of self-improving agents~\citep{xu2026harness2}, can therefore spread
+collusive rules that no content filter flags. Provenance of what enters such stores matters as much as its
+content.
 
 \textbf{Verify by repetition.} With stochastic agents, single counterfactual replays flagged more wrong channels
 than right ones. Audits that intervene on LLM agents should use repeated replays against matched null replays.
@@ -365,7 +409,8 @@ they say about themselves.
 \subsection*{Limitations}
 Only one model (gpt-oss-20b at low reasoning effort) colluded in our settings, so we cannot say whether memory is the
 carrier for other models; Nemotron-120B never colluded. Samples are small: five unmonitored and six monitored audited
-games, and ten games per arm in the monitoring comparison. Market prices are an always-visible channel we cannot mask,
+games, ten games per arm in the monitoring comparison and six per arm in the transplant experiment, whose donors
+were all Firm A and which we did not repeat with a monitoring notice. Market prices are an always-visible channel we cannot mask,
 so ``no channel'' still leaves price feedback. Masking memory removes it entirely, which is a strong intervention.
 The first thirteen Cournot games were recorded before we captured hidden reasoning. Kev and Laya read our evidence
 summaries rather than raw logs, and the behavioural monitor result is post hoc. The market is a stylised two-firm
@@ -374,7 +419,7 @@ rather than LLM collusion in general; the methodological warning about single re
 
 \subsection*{Future work}
 Repeat the audit with more models and more firms; pre-specify the behavioural monitor and test it on new games;
-give Kev raw provenance instead of summaries; test agent replacement and memory sharing; and study monitors that have
+give Kev raw provenance instead of summaries; test memory transplants between different models, into monitored games and across market types; and study monitors that have
 reasoning access in realistic workflows. A promising direction is adaptive defence. Recursive harness improvement
 such as Harness$^2$~\citep{xu2026harness2} edits an agent's memory, guardrails and skills at test time, guided by
 contrasts between matched executions. Run by a defender, with repeated counterfactual replays as the evidence
@@ -386,7 +431,8 @@ library, so self-improving harnesses need external provenance recording of the k
 \section{Conclusion}
 Our LLM firms formed tacit collusion by watching each other but stored it privately: in four of five audited
 games, masking a firm's private memory robustly reduced an established market division, and no board or
-rival-history pathway met our rule in any game. Sanitising memory left the rule in place, and a monitoring notice
+rival-history pathway met our rule in any game. Sanitising memory left the rule in place, and the sanitised rule
+made fresh firms divide the market with new rivals in six of six games. A monitoring notice
 did not stop division but moved talk of detection into hidden reasoning. Auditors should localise coordination with repeated, verified interventions rather than single
 replays or message reading, and monitors should be judged on whether they read agent behaviour in memory and
 reasoning, not agents' descriptions of themselves.
